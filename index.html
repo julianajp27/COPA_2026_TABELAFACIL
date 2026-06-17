@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa do Mundo 2026 | Resultados</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Copa do Mundo <span class="highlight">2026</span></h1>
+            <p>Resultados e Chaveamentos</p>
+        </header>
+
+        <nav class="fases-nav">
+            <button class="btn-fase active" data-fase="Fase de Grupos">1ª Fase</button>
+            <button class="btn-fase" data-fase="16-Avos">16-Avos</button>
+            <button class="btn-fase" data-fase="Oitavas">Oitavas</button>
+            <button class="btn-fase" data-fase="Quartas">Quartas</button>
+            <button class="btn-fase" data-fase="Semifinal">Semifinal</button>
+            <button class="btn-fase" data-fase="Final">Final</button>
+        </nav>
+
+        <main>
+            <table class="tabela-jogos">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th class="time-col">Mandante</th>
+                        <th class="placar-col">Placar</th>
+                        <th class="time-col">Visitante</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo">
+                    </tbody>
+            </table>
+            
+            <div id="loading" class="hidden">Carregando dados...</div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

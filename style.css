@@ -1,0 +1,143 @@
+/* Reset básico e tipografia */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Cabeçalho */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.highlight {
+    color: #00e676; /* Verde moderno */
+}
+
+header p {
+    color: #a0a0a0;
+    margin-top: 0.5rem;
+}
+
+/* Navegação e Botões */
+.fases-nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 2rem;
+}
+
+.btn-fase {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #333;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-fase:hover {
+    background-color: #2a2a2a;
+    border-color: #00e676;
+}
+
+.btn-fase.active {
+    background-color: #00e676;
+    color: #121212;
+    border-color: #00e676;
+}
+
+/* Tabela de Resultados */
+.tabela-jogos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.tabela-jogos th, 
+.tabela-jogos td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+.tabela-jogos th {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.tabela-jogos tr:hover {
+    background-color: #252525;
+}
+
+.time-col {
+    width: 30%;
+    font-weight: bold;
+}
+
+.placar-col {
+    width: 15%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00e676;
+}
+
+/* Feedback de Carregamento */
+#loading {
+    text-align: center;
+    margin-top: 2rem;
+    color: #a0a0a0;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Correção de Responsividade para Celulares */
+@media (max-width: 600px) {
+    .tabela-jogos {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap; /* Impede que o texto quebre e esmague as colunas */
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .btn-fase {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+}
