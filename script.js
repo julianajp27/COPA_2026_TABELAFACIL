@@ -2,16 +2,16 @@
 const botoesFase = document.querySelectorAll('.btn-fase');
 const tabelaCorpo = document.getElementById('tabela-corpo');
 const loading = document.getElementById('loading');
-const filtroData = document.getElementById('filtro-data'); // Novo elemento do filtro
+const filtroData = document.getElementById('filtro-data'); 
 
 // ==========================================
 // CONFIGURAÇÃO DA API (Seu Back-end no Render)
 // ==========================================
 const API_URL = 'https://copa-2026-tabelafacil.onrender.com/api/jogos';
 
-let jogosDaFaseAtual = []; // Memória para guardar os jogos da fase selecionada
+let jogosDaFaseAtual = []; 
 
-// Dicionário para traduzir o nome do nosso botão (Português) para o formato da API (Inglês)
+// Dicionário de Fases
 const deParaFases = {
     "Fase de Grupos": "GROUP_STAGE",
     "16-Avos": "LAST_32",
@@ -21,8 +21,67 @@ const deParaFases = {
     "Final": "FINAL"
 };
 
+// ==========================================
+// DICIONÁRIO DE TRADUÇÃO DE PAÍSES
+// ==========================================
+const nomesPaises = {
+    "Algeria": "Argélia",
+    "Argentina": "Argentina",
+    "Australia": "Austrália",
+    "Belgium": "Bélgica",
+    "Bosnia-Herzegovina": "Bósnia e Herzegovina",
+    "Brazil": "Brasil",
+    "Cameroon": "Camarões",
+    "Canada": "Canadá",
+    "Cape Verde Islands": "Cabo Verde",
+    "Colombia": "Colômbia",
+    "Costa Rica": "Costa Rica",
+    "Croatia": "Croácia",
+    "Czechia": "Chéquia",
+    "Denmark": "Dinamarca",
+    "Ecuador": "Equador",
+    "England": "Inglaterra",
+    "Egypt": "Egito",
+    "France": "França",
+    "Germany": "Alemanha",
+    "Ghana": "Gana",
+    "Haiti": "Haiti",
+    "Honduras": "Honduras",
+    "Iraq": "Iraque",
+    "Iran": "Irã",
+    "Ivory Coast": "Costa do Marfim",
+    "Japan": "Japão",
+    "Jordan": "Jordânia",
+    "Mexico": "México",
+    "Morocco": "Marrocos",
+    "Netherlands": "Holanda",
+    "New Zealand": "Nova Zelândia",
+    "Norway": "Noruega",
+    "Panama": "Panamá",
+    "Paraguay": "Paraguai",
+    "Peru": "Peru",
+    "Poland": "Polônia",
+    "Portugal": "Portugal",
+    "Qatar": "Catar",
+    "Saudi Arabia": "Arábia Saudita",
+    "Senegal": "Senegal",
+    "Serbia": "Sérvia",
+    "Slovenia": "Eslovênia",
+    "South Africa": "África do Sul",
+    "South Korea": "Coreia do Sul",
+    "Spain": "Espanha",
+    "Scotland": "Escócia",
+    "Sweden": "Suécia",
+    "Switzerland": "Suíça",
+    "Turkey": "Turquia",
+    "Tunisia": "Tunísia",
+    "United States": "Estados Unidos",
+    "Uruguay": "Uruguai",
+    "Uzbekistan": "Uzbequistão",
+    "Wales": "País de Gales"
+};
+
 async function carregarFase(faseEscolhida) {
-    // Prepara a tela
     tabelaCorpo.innerHTML = '';
     loading.classList.remove('hidden');
 
@@ -34,15 +93,10 @@ async function carregarFase(faseEscolhida) {
         }
 
         const dados = await resposta.json();
-        
-        // Converte o nome do botão clicado para o nome da fase na API
         const faseAPI = deParaFases[faseEscolhida];
 
-        // Filtra dentro dos "matches" (jogos) apenas os que são da fase correta
-        // E salva na nossa variável de memória
         jogosDaFaseAtual = dados.matches.filter(jogo => jogo.stage === faseAPI);
 
-        // Limpa o calendário toda vez que o usuário trocar de aba (Fase)
         filtroData.value = '';
 
         renderizarTabela(jogosDaFaseAtual);
@@ -56,34 +110,36 @@ async function carregarFase(faseEscolhida) {
                 </td>
             </tr>`;
     } finally {
-        loading.classList.add('hidden'); // Esconde o "Carregando..."
+        loading.classList.add('hidden'); 
     }
 }
 
 function renderizarTabela(jogos) {
-    // Limpa a tabela antes de renderizar os novos dados (importante para o filtro)
     tabelaCorpo.innerHTML = '';
 
     if (!jogos || jogos.length === 0) {
-        tabelaCorpo.innerHTML = `<tr><td colspan="5" style="text-align: center;">Nenhum jogo encontrado para esta seleção.</td></tr>`;
+        tabelaCorpo.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Nenhum jogo encontrado para esta data.</td></tr>`;
         return;
     }
 
     jogos.forEach(jogo => {
-        // Pega o nome do time ou coloca "A Definir" caso o chaveamento ainda não esteja pronto
-        const timeA = jogo.homeTeam.name || "A Definir";
-        const timeB = jogo.awayTeam.name || "A Definir";
+        // ================= TRADUÇÃO DOS TIMES =================
+        const nomeOriginalA = jogo.homeTeam.name;
+        const nomeOriginalB = jogo.awayTeam.name;
+
+        // Se o nome existir no dicionário, usa a tradução. Se não, usa o original. Se for nulo, "A Definir".
+        const timeA = nomeOriginalA ? (nomesPaises[nomeOriginalA] || nomeOriginalA) : "A Definir";
+        const timeB = nomeOriginalB ? (nomesPaises[nomeOriginalB] || nomeOriginalB) : "A Definir";
         
-        // Tratamento do placar
         let placar = "- x -";
         if (jogo.status === "FINISHED" || jogo.status === "IN_PLAY" || jogo.status === "PAUSED") {
             placar = `${jogo.score.fullTime.home} x ${jogo.score.fullTime.away}`;
         }
 
-        // Formatação da Data (converte de padrão UTC para o formato brasileiro)
-        const dataFormatada = new Date(jogo.utcDate).toLocaleDateString('pt-BR');
+        const dataObj = new Date(jogo.utcDate);
+        const dataFormatada = dataObj.toLocaleDateString('pt-BR');
+        const horaFormatada = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-        // Tradução do Status do jogo
         let statusTraduzido = "A Jogar";
         if (jogo.status === "FINISHED") statusTraduzido = "Finalizado";
         if (jogo.status === "IN_PLAY") statusTraduzido = "Ao Vivo";
@@ -91,7 +147,10 @@ function renderizarTabela(jogos) {
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${dataFormatada}</td>
+            <td>
+                <div style="font-weight: 600;">${dataFormatada}</div>
+                <div style="font-size: 0.85rem; color: #b0b0b0;">${horaFormatada}</div>
+            </td>
             <td class="time-col">${timeA}</td>
             <td class="placar-col">${placar}</td>
             <td class="time-col">${timeB}</td>
@@ -101,38 +160,33 @@ function renderizarTabela(jogos) {
     });
 }
 
-// Adicionando eventos de clique nos botões
 botoesFase.forEach(botao => {
     botao.addEventListener('click', (e) => {
-        // Atualiza a cor de destaque do botão ativo
         botoesFase.forEach(btn => btn.classList.remove('active'));
         e.target.classList.add('active');
 
-        // Dispara a busca
         const fase = e.target.getAttribute('data-fase');
         carregarFase(fase);
     });
 });
 
-// Evento que escuta quando o usuário escolhe uma data no calendário
 filtroData.addEventListener('change', (e) => {
-    const dataEscolhida = e.target.value; // Vem no formato YYYY-MM-DD
+    const dataEscolhida = e.target.value; 
 
-    // Se o usuário limpar o calendário, mostra todos os jogos da fase novamente
     if (!dataEscolhida) {
         renderizarTabela(jogosDaFaseAtual);
         return;
     }
 
-    // Filtra os jogos comparando a data escolhida com a data do jogo
+    const [ano, mes, dia] = dataEscolhida.split('-');
+    const dataFormatadaFiltro = `${dia}/${mes}/${ano}`;
+
     const jogosFiltrados = jogosDaFaseAtual.filter(jogo => {
-        // A data da API vem como "2026-06-11T19:00:00Z". O split('T')[0] pega só o "2026-06-11"
-        const dataDoJogo = jogo.utcDate.split('T')[0]; 
-        return dataDoJogo === dataEscolhida;
+        const dataDoJogoLocal = new Date(jogo.utcDate).toLocaleDateString('pt-BR'); 
+        return dataDoJogoLocal === dataFormatadaFiltro;
     });
 
     renderizarTabela(jogosFiltrados);
 });
 
-// Ao abrir a página, já puxa a Fase de Grupos
 carregarFase('Fase de Grupos');
