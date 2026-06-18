@@ -4,11 +4,9 @@ const tabelaCorpo = document.getElementById('tabela-corpo');
 const loading = document.getElementById('loading');
 
 // ==========================================
-// CONFIGURAÇÃO DA API REAL (football-data.org)
+// CONFIGURAÇÃO DA API (Seu Back-end no Render)
 // ==========================================
-// Substitua a linha do const API_URL por esta:
-const API_URL = 'http://127.0.0.1:8000/api/jogos'; // <-- Trocaremos pelo link do Railway depois
-const API_KEY = 'SUA_CHAVE_SECRETA_AQUI'; // <-- Insira sua chave secreta aqui (sem aspas)
+const API_URL = 'https://copa-2026-tabelafacil.onrender.com/api/jogos';
 
 // Dicionário para traduzir o nome do nosso botão (Português) para o formato da API (Inglês)
 const deParaFases = {
@@ -26,16 +24,12 @@ async function carregarFase(faseEscolhida) {
     loading.classList.remove('hidden');
 
     try {
-        // O "fetch" agora vai na URL real e envia a sua chave secreta como um cabeçalho (Header)
-        const resposta = await fetch(API_URL, {
-            method: 'GET',
-            headers: {
-                'X-Auth-Token': API_KEY
-            }
-        });
+        // Como criamos o back-end em Python, o Front-end não precisa mais mandar a chave!
+        // Basta fazer um fetch simples direto na sua própria API do Render.
+        const resposta = await fetch(API_URL);
 
         if (!resposta.ok) {
-            throw new Error(`Erro de autenticação ou limite excedido. Status: ${resposta.status}`);
+            throw new Error(`Erro ao conectar com o seu servidor. Status: ${resposta.status}`);
         }
 
         const dados = await resposta.json();
@@ -102,7 +96,7 @@ function renderizarTabela(jogos) {
 // Adicionando eventos de clique nos botões
 botoesFase.forEach(botao => {
     botao.addEventListener('click', (e) => {
-        // Atualiza a cor verde do botão ativo
+        // Atualiza a cor de destaque do botão ativo
         botoesFase.forEach(btn => btn.classList.remove('active'));
         e.target.classList.add('active');
 
