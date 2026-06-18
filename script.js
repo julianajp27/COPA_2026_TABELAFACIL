@@ -2,11 +2,14 @@
 const botoesFase = document.querySelectorAll('.btn-fase');
 const tabelaCorpo = document.getElementById('tabela-corpo');
 const loading = document.getElementById('loading');
+const filtroData = document.getElementById('filtro-data'); // Novo elemento do filtro
 
 // ==========================================
 // CONFIGURAÇÃO DA API (Seu Back-end no Render)
 // ==========================================
 const API_URL = 'https://copa-2026-tabelafacil.onrender.com/api/jogos';
+
+let jogosDaFaseAtual = []; // Memória para guardar os jogos da fase selecionada
 
 // Dicionário para traduzir o nome do nosso botão (Português) para o formato da API (Inglês)
 const deParaFases = {
@@ -24,8 +27,6 @@ async function carregarFase(faseEscolhida) {
     loading.classList.remove('hidden');
 
     try {
-        // Como criamos o back-end em Python, o Front-end não precisa mais mandar a chave!
-        // Basta fazer um fetch simples direto na sua própria API do Render.
         const resposta = await fetch(API_URL);
 
         if (!resposta.ok) {
@@ -38,9 +39,13 @@ async function carregarFase(faseEscolhida) {
         const faseAPI = deParaFases[faseEscolhida];
 
         // Filtra dentro dos "matches" (jogos) apenas os que são da fase correta
-        const jogosDaFase = dados.matches.filter(jogo => jogo.stage === faseAPI);
+        // E salva na nossa variável de memória
+        jogosDaFaseAtual = dados.matches.filter(jogo => jogo.stage === faseAPI);
 
-        renderizarTabela(jogosDaFase);
+        // Limpa o calendário toda vez que o usuário trocar de aba (Fase)
+        filtroData.value = '';
+
+        renderizarTabela(jogosDaFaseAtual);
 
     } catch (erro) {
         console.error("Erro na requisição:", erro);
@@ -56,8 +61,11 @@ async function carregarFase(faseEscolhida) {
 }
 
 function renderizarTabela(jogos) {
+    // Limpa a tabela antes de renderizar os novos dados (importante para o filtro)
+    tabelaCorpo.innerHTML = '';
+
     if (!jogos || jogos.length === 0) {
-        tabelaCorpo.innerHTML = `<tr><td colspan="5" style="text-align: center;">Nenhum jogo encontrado ou os dados ainda não foram liberados.</td></tr>`;
+        tabelaCorpo.innerHTML = `<tr><td colspan="5" style="text-align: center;">Nenhum jogo encontrado para esta seleção.</td></tr>`;
         return;
     }
 
@@ -104,6 +112,26 @@ botoesFase.forEach(botao => {
         const fase = e.target.getAttribute('data-fase');
         carregarFase(fase);
     });
+});
+
+// Evento que escuta quando o usuário escolhe uma data no calendário
+filtroData.addEventListener('change', (e) => {
+    const dataEscolhida = e.target.value; // Vem no formato YYYY-MM-DD
+
+    // Se o usuário limpar o calendário, mostra todos os jogos da fase novamente
+    if (!dataEscolhida) {
+        renderizarTabela(jogosDaFaseAtual);
+        return;
+    }
+
+    // Filtra os jogos comparando a data escolhida com a data do jogo
+    const jogosFiltrados = jogosDaFaseAtual.filter(jogo => {
+        // A data da API vem como "2026-06-11T19:00:00Z". O split('T')[0] pega só o "2026-06-11"
+        const dataDoJogo = jogo.utcDate.split('T')[0]; 
+        return dataDoJogo === dataEscolhida;
+    });
+
+    renderizarTabela(jogosFiltrados);
 });
 
 // Ao abrir a página, já puxa a Fase de Grupos
