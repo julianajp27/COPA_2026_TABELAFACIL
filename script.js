@@ -8,7 +8,7 @@ const loading = document.getElementById('loading');
 // ==========================================
 // Substitua a linha do const API_URL por esta:
 const API_URL = 'http://127.0.0.1:8000/api/jogos'; // <-- Trocaremos pelo link do Railway depois
-const API_KEY = '7234a70900d449c3babb4ea8677c14be'; // Sua chave de acesso
+const API_KEY = 'SUA_CHAVE_SECRETA_AQUI'; // <-- Insira sua chave secreta aqui (sem aspas)
 
 // Dicionário para traduzir o nome do nosso botão (Português) para o formato da API (Inglês)
 const deParaFases = {
