@@ -2,6 +2,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
+from dotenv import load_dotenv
+
+# Carrega as variáveis de segurança do arquivo .env (para quando rodar localmente)
+load_dotenv()
 
 app = FastAPI()
 
@@ -14,12 +18,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Chave de segurança (escondida posteriormente no painel do Railway)
-API_KEY = os.environ.get("FOOTBALL_API_KEY", "7234a70900d449c3babb4ea8677c14be")
+# Chave de segurança lida das variáveis de ambiente (nunca exposta no código)
+API_KEY = os.getenv("FOOTBALL_API_KEY")
 API_URL = "https://api.football-data.org/v4/competitions/WC/matches"
 
 @app.get("/api/jogos")
 def buscar_jogos():
+    # Prevenção: avisa se a chave não for encontrada no ambiente
+    if not API_KEY:
+        raise HTTPException(status_code=500, detail="Chave da API não configurada no servidor.")
+        
     headers = {"X-Auth-Token": API_KEY}
     resposta = requests.get(API_URL, headers=headers)
     
