@@ -18,32 +18,31 @@ O projeto foi construído separando as responsabilidades de Front-end e Back-end
 - **Tratamento de Timezone:** Conversão automática dos horários dos jogos para o fuso horário local do usuário.
 - **Segurança de API:** O Front-end não expõe chaves. Todas as requisições passam pelo Back-end em Python, que guarda os tokens em variáveis de ambiente (`.env`).
 
-## 🛠️ Como rodar o projeto localmente
+# 🛠️ Como rodar o projeto localmente
 
-### 1. Configurando o Back-end
+## 1. Configurando o Back-end
 Certifique-se de ter o Python instalado em sua máquina.
 
-```bash
-# Clone o repositório
+**Clone o repositório**
 git clone [https://github.com/SEU-USUARIO/COPA_2026_TABELAFACIL.git](https://github.com/SEU-USUARIO/COPA_2026_TABELAFACIL.git)
 
-# Entre na pasta
+**Entre na pasta**
 cd COPA_2026_TABELAFACIL
 
-# Instale as dependências do servidor Python
+**Instale as dependências do servidor Python**
 pip install -r requirements.txt
 
-# Crie um arquivo .env na raiz do projeto com a sua chave da API:
+**Crie um arquivo .env na raiz do projeto com a sua chave da API:**
 FOOTBALL_API_KEY=sua_chave_aqui
 
-# Inicie o servidor local:
+**Inicie o servidor local:**
 python -m uvicorn main:app --reload
 
 A API estará rodando em http://127.0.0.1:8000.
 
-### 2. Configurando o Front-end
+# 2. Configurando o Front-end
 No arquivo script.js, certifique-se de que a constante API_URL esteja apontando para o seu servidor local (para testes) ou para o seu servidor no Render (produção).
 
-# // Exemplo para desenvolvimento local
+**Exemplo para desenvolvimento local**
 const API_URL = '[http://127.0.0.1:8000/api/jogos](http://127.0.0.1:8000/api/jogos)';
 Basta abrir o arquivo index.html em seu navegador para utilizar a aplicação.
